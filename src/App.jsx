@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ROOTS,
   SCALE_GROUPS,
@@ -7,12 +7,15 @@ import {
   pcOfLabel,
   GUITAR_TUNINGS,
   BASS_TUNINGS,
+  SCALE_NOTES_TEXT,
 } from "./lib/theory";
 import { midiForStrings } from "./lib/tuner";
 import Fretboard from "./components/Fretboard";
 import Piano from "./components/Piano";
 import InfoPanels from "./components/InfoPanels";
 import Tuner from "./components/Tuner";
+import Metronome from "./components/Metronome";
+import UsedBy from "./components/UsedBy";
 
 export default function App() {
   const [rootLabel, setRootLabel] = useState("A");
@@ -24,6 +27,18 @@ export default function App() {
   const [lefty, setLefty] = useState(false);
   const [fretCount, setFretCount] = useState(15);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [metroOpen, setMetroOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoRef = useRef(null);
+
+  useEffect(() => {
+    if (!infoOpen) return;
+    const handler = (e) => {
+      if (infoRef.current && !infoRef.current.contains(e.target)) setInfoOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [infoOpen]);
   const [theme, setTheme] = useState(
     () => document.documentElement.dataset.theme || "light"
   );
@@ -77,7 +92,7 @@ export default function App() {
             <div className="brand">
               Fret<em>work</em>
             </div>
-            <div className="brand-sub">Guitar scale explorer</div>
+            <div className="brand-sub">Music scale explorer</div>
           </div>
           <div className="header-actions">
             <div className="instrument-toggle" role="group" aria-label="Instrument">
@@ -172,9 +187,30 @@ export default function App() {
         )}
 
         <main id="main" tabIndex={-1}>
-          <h1 className="scale-title" aria-live="polite">
-            <span className="root">{rootLabel}</span> {scale.name}
-          </h1>
+          <div className="scale-title-row">
+            <h1 className="scale-title" aria-live="polite">
+              <span className="root">{rootLabel}</span> {scale.name}
+            </h1>
+            <div className="info-popover-wrap" ref={infoRef}>
+              <button
+                className={`info-btn ${infoOpen ? "active" : ""}`}
+                onClick={() => setInfoOpen((o) => !o)}
+                aria-expanded={infoOpen}
+                aria-label={`About ${scale.name}`}
+              >
+                i
+              </button>
+              {infoOpen && (
+                <div className="info-popover" role="tooltip">
+                  <p>{SCALE_NOTES_TEXT[scale.id]}</p>
+                  <p className="info-popover-sub">
+                    {scale.intervals.length} notes per octave. Every pattern shown is movable —
+                    shift the whole shape up or down the neck and the scale changes key with it.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
           <div className="scale-meta">
             <span className="chip root">
               Root <strong>{rootLabel}</strong>
@@ -299,12 +335,56 @@ export default function App() {
           </details>
 
           <InfoPanels rootLabel={rootLabel} scale={scale} />
+
+          <UsedBy scaleId={scaleId} />
         </main>
+
+        <div className="metro-col">
+          {/* Stays mounted while collapsed so the beat keeps going */}
+          <aside
+            className={`metro-sidebar ${metroOpen ? "" : "is-hidden"}`}
+            aria-label="Metronome"
+            aria-hidden={!metroOpen}
+          >
+            <div className="sidebar-head">
+              <h2>Metronome</h2>
+              <button
+                className="sidebar-toggle"
+                onClick={() => setMetroOpen(false)}
+                aria-label="Collapse metronome"
+                title="Collapse"
+              >
+                ›
+              </button>
+            </div>
+            <Metronome />
+          </aside>
+          {!metroOpen && (
+            <button
+              className="sidebar-open"
+              onClick={() => setMetroOpen(true)}
+              aria-label="Show metronome"
+              title="Show metronome"
+            >
+              <span className="sidebar-open-icon">‹</span>
+              <span className="sidebar-open-label">Metronome</span>
+            </button>
+          )}
+        </div>
       </div>
 
       <footer className="footer">
-        Fretwork — an open scale reference. All diagrams are generated live; switching root, scale,
-        tuning or instrument never reloads the page.
+        <p>
+          Fretwork — an open scale reference. Built by <a className="link" href="https://alapandas.in">Alapan</a>
+        </p>
+        <a
+          className="coffee-btn"
+          href="https://buymeacoffee.com/alapandas3"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ☕ Buy me a coffee
+        </a>
       </footer>
     </>
   );

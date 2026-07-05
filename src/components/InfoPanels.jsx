@@ -4,7 +4,6 @@ import {
   intervalNameOf,
   stepFormula,
   diatonicChords,
-  SCALE_NOTES_TEXT,
 } from "../lib/theory";
 
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII"];
@@ -93,16 +92,6 @@ export default function InfoPanels({ rootLabel, scale }) {
         </details>
       )}
 
-      <details className="panel">
-        <summary>About this scale</summary>
-        <div className="panel-body">
-          <p>{SCALE_NOTES_TEXT[scale.id]}</p>
-          <p>
-            {scale.intervals.length} notes per octave. Every pattern shown is movable: shift the
-            whole shape up or down the neck and the scale changes key with it.
-          </p>
-        </div>
-      </details>
     </div>
   );
 }

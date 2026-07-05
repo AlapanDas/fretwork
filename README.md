@@ -51,4 +51,7 @@ src/
 No state library, no router, no CSS framework — just React, one theory module, and CSS
 custom properties. Adding a scale is one line in `SCALE_GROUPS`; adding a tuning is one
 line in `GUITAR_TUNINGS`.
-# fretwork
+
+## Support
+
+If Fretwork helps your practice, you can [☕ buy me a coffee](https://buymeacoffee.com/alapandas3).

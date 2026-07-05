@@ -117,6 +117,133 @@ export const SCALE_NOTES_TEXT = {
 };
 
 // ---------------------------------------------------------------------------
+// Famous songs by scale — Bollywood, Hollywood, John Mayer where apt
+// ---------------------------------------------------------------------------
+
+export const SCALE_SONGS = {
+  "major": [
+    { song: "Let It Be", artist: "The Beatles" },
+    { song: "Kal Ho Naa Ho", artist: "Shankar Ehsaan Loy" },
+    { song: "Waiting on the World to Change", artist: "John Mayer" },
+  ],
+  "minor": [
+    { song: "Stairway to Heaven", artist: "Led Zeppelin" },
+    { song: "Tum Hi Ho", artist: "Arijit Singh" },
+    { song: "Slow Dancing in a Burning Room", artist: "John Mayer" },
+  ],
+  "melodic-minor": [
+    { song: "Footprints", artist: "Wayne Shorter" },
+    { song: "My Favorite Things", artist: "John Coltrane" },
+    { song: "Tujhe Dekha Toh", artist: "Jatin-Lalit" },
+  ],
+  "harmonic-minor": [
+    { song: "Smooth", artist: "Santana ft. Rob Thomas" },
+    { song: "Jai Ho", artist: "A.R. Rahman" },
+    { song: "Eruption", artist: "Van Halen" },
+  ],
+  "pentatonic-major": [
+    { song: "My Girl", artist: "The Temptations" },
+    { song: "Take Me Home, Country Roads", artist: "John Denver" },
+    { song: "Daughters", artist: "John Mayer" },
+  ],
+  "pentatonic-minor": [
+    { song: "Smoke on the Water", artist: "Deep Purple" },
+    { song: "Chaiyya Chaiyya", artist: "A.R. Rahman" },
+    { song: "Gravity", artist: "John Mayer" },
+  ],
+  "blues": [
+    { song: "Red House", artist: "Jimi Hendrix" },
+    { song: "The Thrill Is Gone", artist: "B.B. King" },
+    { song: "Still Got the Blues", artist: "Gary Moore" },
+  ],
+  "rocknroll": [
+    { song: "Johnny B. Goode", artist: "Chuck Berry" },
+    { song: "Rock Around the Clock", artist: "Bill Haley & His Comets" },
+    { song: "Back in Black", artist: "AC/DC" },
+  ],
+  "ionian": [
+    { song: "Happy", artist: "Pharrell Williams" },
+    { song: "Dum Maro Dum", artist: "R.D. Burman" },
+    { song: "No Such Thing", artist: "John Mayer" },
+  ],
+  "dorian": [
+    { song: "Oye Como Va", artist: "Santana" },
+    { song: "Kun Faya Kun", artist: "A.R. Rahman" },
+    { song: "I'm Gonna Find Another You", artist: "John Mayer" },
+  ],
+  "phrygian": [
+    { song: "Wherever I May Roam", artist: "Metallica" },
+    { song: "Sadda Haq", artist: "A.R. Rahman" },
+    { song: "White Rabbit", artist: "Jefferson Airplane" },
+  ],
+  "lydian": [
+    { song: "The Simpsons Theme", artist: "Danny Elfman" },
+    { song: "Flying", artist: "The Beatles" },
+    { song: "Flying in a Blue Dream", artist: "Joe Satriani" },
+  ],
+  "mixolydian": [
+    { song: "Norwegian Wood", artist: "The Beatles" },
+    { song: "Vande Mataram", artist: "A.R. Rahman" },
+    { song: "Why Georgia", artist: "John Mayer" },
+  ],
+  "aeolian": [
+    { song: "Losing My Religion", artist: "R.E.M." },
+    { song: "Ae Dil Hai Mushkil", artist: "Arijit Singh" },
+    { song: "Dreaming with a Broken Heart", artist: "John Mayer" },
+  ],
+  "locrian": [
+    { song: "Army of Me", artist: "Björk" },
+    { song: "Am I Evil?", artist: "Metallica" },
+    { song: "Pneuma", artist: "Tool" },
+  ],
+  "dorian-bebop": [
+    { song: "So What", artist: "Miles Davis" },
+    { song: "Impressions", artist: "John Coltrane" },
+    { song: "Maiden Voyage", artist: "Herbie Hancock" },
+  ],
+  "mixolydian-bebop": [
+    { song: "Donna Lee", artist: "Charlie Parker" },
+    { song: "There Will Never Be Another You", artist: "Jazz Standard" },
+    { song: "Tune Up", artist: "Miles Davis" },
+  ],
+  "whole-tone": [
+    { song: "Voiles", artist: "Claude Debussy" },
+    { song: "Mysterious Traveller", artist: "Weather Report" },
+    { song: "Whole Lotta Love (intro riff)", artist: "Led Zeppelin" },
+  ],
+  "half-whole-dim": [
+    { song: "Giant Steps", artist: "John Coltrane" },
+    { song: "Moment's Notice", artist: "John Coltrane" },
+    { song: "Caravan", artist: "Duke Ellington" },
+  ],
+  "whole-half-dim": [
+    { song: "Round Midnight", artist: "Thelonious Monk" },
+    { song: "Epistrophy", artist: "Thelonious Monk" },
+    { song: "Take the A Train", artist: "Duke Ellington" },
+  ],
+  "spanish": [
+    { song: "Malagueña", artist: "Ernesto Lecuona" },
+    { song: "Misirlou", artist: "Dick Dale" },
+    { song: "Señorita (Zindagi Na Milegi Dobara)", artist: "Shankar Ehsaan Loy" },
+  ],
+  "persian": [
+    { song: "Scheherazade", artist: "Rimsky-Korsakov" },
+    { song: "Mast Qalandar", artist: "Nusrat Fateh Ali Khan" },
+    { song: "Shaher-e-Tabassum", artist: "Shafqat Amanat Ali" },
+  ],
+  "gypsy-major": [
+    { song: "Minor Swing", artist: "Django Reinhardt" },
+    { song: "Czardas", artist: "Vittorio Monti" },
+    { song: "Djangology", artist: "Django Reinhardt" },
+  ],
+  "gypsy-minor": [
+    { song: "Libertango", artist: "Astor Piazzolla" },
+    { song: "Der Erlkönig", artist: "Schubert" },
+    { song: "Bakhuda Tumhi Ho", artist: "Atif Aslam" },
+  ],
+};
+
+// ---------------------------------------------------------------------------
 // Tunings
 // ---------------------------------------------------------------------------
 // Strings listed low → high as { pc, octave-ish label }.
