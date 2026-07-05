@@ -4,10 +4,13 @@ import {
   SCALE_GROUPS,
   scaleById,
   spellScale,
+  pcOfLabel,
   GUITAR_TUNINGS,
   BASS_TUNINGS,
 } from "./lib/theory";
+import { midiForStrings } from "./lib/tuner";
 import Fretboard from "./components/Fretboard";
+import Piano from "./components/Piano";
 import InfoPanels from "./components/InfoPanels";
 import Tuner from "./components/Tuner";
 
@@ -31,14 +34,37 @@ export default function App() {
   }, [theme]);
 
   const scale = scaleById(scaleId);
+  const isPiano = instrument === "piano";
   const tunings = instrument === "guitar" ? GUITAR_TUNINGS : BASS_TUNINGS;
   const tuningId = instrument === "guitar" ? guitarTuning : bassTuning;
-  const tuning = tunings.find((t) => t.id === tuningId);
+  const tuning = isPiano ? null : tunings.find((t) => t.id === tuningId);
 
   const noteNames = useMemo(
     () => spellScale(rootLabel, scale.intervals),
     [rootLabel, scale]
   );
+
+  // Reference tones for the tuner: open strings for guitar/bass,
+  // the scale itself (root in octave 4) for piano.
+  const toneInfo = useMemo(() => {
+    if (isPiano) {
+      const base = 60 + pcOfLabel(rootLabel); // root within C4–B4
+      return {
+        title: `${rootLabel} ${scale.name}`,
+        tones: scale.intervals.map((iv, i) => ({
+          midi: base + iv,
+          sub: `degree ${i + 1}`,
+        })),
+      };
+    }
+    return {
+      title: tuning.name,
+      tones: midiForStrings(tuning.strings, instrument).map((midi, i) => ({
+        midi,
+        sub: `string ${i + 1}`,
+      })),
+    };
+  }, [isPiano, rootLabel, scale, tuning, instrument]);
 
   return (
     <>
@@ -68,6 +94,13 @@ export default function App() {
                 onClick={() => setInstrument("bass")}
               >
                 Bass
+              </button>
+              <button
+                className={instrument === "piano" ? "active" : ""}
+                aria-pressed={instrument === "piano"}
+                onClick={() => setInstrument("piano")}
+              >
+                Piano
               </button>
             </div>
             <button
@@ -149,9 +182,11 @@ export default function App() {
             <span className="chip">
               Notes <strong>{noteNames.join(" ")}</strong>
             </span>
-            <span className="chip">
-              Tuning <strong>{tuning.name}</strong>
-            </span>
+            {tuning && (
+              <span className="chip">
+                Tuning <strong>{tuning.name}</strong>
+              </span>
+            )}
           </div>
 
           <div className="controls">
@@ -179,60 +214,73 @@ export default function App() {
               </button>
             </div>
 
-            <select
-              value={tuningId}
-              onChange={(e) =>
-                instrument === "guitar"
-                  ? setGuitarTuning(e.target.value)
-                  : setBassTuning(e.target.value)
-              }
-              aria-label="Tuning"
-            >
-              {tunings.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-            </select>
+            {!isPiano && (
+              <>
+                <select
+                  value={tuningId}
+                  onChange={(e) =>
+                    instrument === "guitar"
+                      ? setGuitarTuning(e.target.value)
+                      : setBassTuning(e.target.value)
+                  }
+                  aria-label="Tuning"
+                >
+                  {tunings.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
+                  ))}
+                </select>
 
-            <select
-              value={fretCount}
-              onChange={(e) => setFretCount(Number(e.target.value))}
-              aria-label="Fret count"
-            >
-              <option value={12}>12 frets</option>
-              <option value={15}>15 frets</option>
-              <option value={22}>22 frets</option>
-            </select>
+                <select
+                  value={fretCount}
+                  onChange={(e) => setFretCount(Number(e.target.value))}
+                  aria-label="Fret count"
+                >
+                  <option value={12}>12 frets</option>
+                  <option value={15}>15 frets</option>
+                  <option value={22}>22 frets</option>
+                </select>
 
-            <div className="seg" role="group" aria-label="Handedness">
-              <button
-                className={!lefty ? "active" : ""}
-                aria-pressed={!lefty}
-                onClick={() => setLefty(false)}
-              >
-                Right-handed
-              </button>
-              <button
-                className={lefty ? "active" : ""}
-                aria-pressed={lefty}
-                onClick={() => setLefty(true)}
-              >
-                Left-handed
-              </button>
-            </div>
+                <div className="seg" role="group" aria-label="Handedness">
+                  <button
+                    className={!lefty ? "active" : ""}
+                    aria-pressed={!lefty}
+                    onClick={() => setLefty(false)}
+                  >
+                    Right-handed
+                  </button>
+                  <button
+                    className={lefty ? "active" : ""}
+                    aria-pressed={lefty}
+                    onClick={() => setLefty(true)}
+                  >
+                    Left-handed
+                  </button>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="board-card">
-            <Fretboard
-              strings={tuning.strings}
-              rootLabel={rootLabel}
-              scaleName={scale.name}
-              intervals={scale.intervals}
-              fretCount={fretCount}
-              showNames={display}
-              lefty={lefty}
-            />
+            {isPiano ? (
+              <Piano
+                rootLabel={rootLabel}
+                scaleName={scale.name}
+                intervals={scale.intervals}
+                showNames={display}
+              />
+            ) : (
+              <Fretboard
+                strings={tuning.strings}
+                rootLabel={rootLabel}
+                scaleName={scale.name}
+                intervals={scale.intervals}
+                fretCount={fretCount}
+                showNames={display}
+                lefty={lefty}
+              />
+            )}
             <div className="legend">
               <span>
                 <i className="dot root" /> Root note
@@ -246,7 +294,7 @@ export default function App() {
           <details className="panel tuner-panel">
             <summary>Tuner</summary>
             <div className="panel-body">
-              <Tuner tuning={tuning} instrument={instrument} />
+              <Tuner title={toneInfo.title} tones={toneInfo.tones} />
             </div>
           </details>
 

@@ -1,16 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { midiForStrings, freqOfMidi, nameOfMidi, noteFromFreq, autoCorrelate } from "../lib/tuner";
+import { useEffect, useRef, useState } from "react";
+import { freqOfMidi, nameOfMidi, noteFromFreq, autoCorrelate } from "../lib/tuner";
 
 /**
  * Two-part tuner:
- *  1. Reference tones — click a string to hear its open-string pitch.
+ *  1. Reference tones — click a tone (open string / scale degree) to hear it.
  *  2. Mic tuner — autocorrelation pitch detection with a cents meter.
+ *
+ * `tones`: [{ midi, sub }] where `sub` is a small caption ("string 1", "degree 3").
  */
-export default function Tuner({ tuning, instrument }) {
-  const midis = useMemo(
-    () => midiForStrings(tuning.strings, instrument),
-    [tuning, instrument]
-  );
+export default function Tuner({ title, tones }) {
 
   // --- Reference tones -----------------------------------------------------
   const audioCtxRef = useRef(null);
@@ -113,9 +111,9 @@ export default function Tuner({ tuning, instrument }) {
   return (
     <div className="tuner">
       <section className="tuner-section" aria-label="Reference tones">
-        <h4>Reference tones — {tuning.name}</h4>
+        <h4>Reference tones — {title}</h4>
         <div className="string-tones">
-          {midis.map((midi, i) => {
+          {tones.map(({ midi, sub }, i) => {
             const { note, octave } = nameOfMidi(midi);
             return (
               <button
@@ -124,16 +122,16 @@ export default function Tuner({ tuning, instrument }) {
                   reading && reading.midi === midi ? "near" : ""
                 }`}
                 onClick={() => playTone(midi)}
-                aria-label={`Play ${note}${octave} reference tone, string ${i + 1}`}
+                aria-label={`Play ${note}${octave} reference tone, ${sub}`}
               >
                 {note}
                 {octave}
-                <small>string {i + 1}</small>
+                <small>{sub}</small>
               </button>
             );
           })}
         </div>
-        <p className="tuner-hint">Tap a string to hear its open-string pitch.</p>
+        <p className="tuner-hint">Tap a note to hear its pitch.</p>
       </section>
 
       <section className="tuner-section" aria-label="Microphone tuner">

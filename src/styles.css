@@ -467,6 +467,13 @@ main:focus {
   width: 100%;
 }
 
+/* Piano keys look cartoonish stretched full width — cap and center them */
+.board-svg.piano-svg {
+  min-width: 620px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
 .legend {
   display: flex;
   gap: 18px;
