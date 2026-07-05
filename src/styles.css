@@ -1,0 +1,910 @@
+/* ---------------------------------------------------------------
+   Fretwork — Fender-inspired minimal palette
+   Blonde:   #F6F0E4  (page background, like a blonde Tele body)
+   Paper:    #FFFDF7  (cards)
+   Rosewood: #29201A  (ink / fretboard)
+   Tweed:    #C7A76C  (hairlines, inlays, subtle accents)
+   Surf:     #4FB3A1  (interactive accent — Surf Green)
+   Fiesta:   #D5503C  (root notes — Fiesta Red)
+
+   Semantic vars (--bg, --card, --ink, …) switch with [data-theme].
+---------------------------------------------------------------- */
+
+:root {
+  --blonde: #f6f0e4;
+  --paper: #fffdf7;
+  --rosewood: #29201a;
+  --rosewood-soft: #4a3c31;
+  --tweed: #c7a76c;
+  --tweed-faint: #e5d7ba;
+  --surf: #4fb3a1;
+  --surf-deep: #34897a;
+  --fiesta: #d5503c;
+  --font-display: "Barlow Condensed", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --radius: 10px;
+  --maxw: 1500px;
+
+  /* Theme-dependent semantics (light) */
+  --bg: var(--blonde);
+  --card: var(--paper);
+  --ink: var(--rosewood);
+  --ink-soft: var(--rosewood-soft);
+  --line: var(--tweed-faint);
+  --line-strong: var(--tweed);
+  --hover: var(--tweed-faint);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #171310;
+  --card: #221c16;
+  --ink: #f0e7d8;
+  --ink-soft: #b9aa94;
+  --line: #3b322a;
+  --line-strong: #5c4d3d;
+  --hover: #32291f;
+  --surf-deep: #63c2af;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ---------- Accessibility helpers ---------- */
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--surf);
+  color: #0f2b26;
+  padding: 10px 16px;
+  border-radius: 0 0 8px 0;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--surf);
+  outline-offset: 2px;
+}
+
+main:focus {
+  outline: none;
+}
+
+/* ---------- Header ---------- */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--rosewood);
+  color: var(--blonde);
+  border-bottom: 3px solid var(--tweed);
+}
+
+.header-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 14px 20px 10px;
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.brand em {
+  font-style: normal;
+  color: var(--surf);
+}
+
+.brand-sub {
+  font-size: 12px;
+  color: var(--tweed);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.instrument-toggle {
+  display: flex;
+  border: 1px solid var(--tweed);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.instrument-toggle button {
+  background: transparent;
+  color: var(--blonde);
+  border: none;
+  padding: 5px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.instrument-toggle button.active {
+  background: var(--surf);
+  color: var(--rosewood);
+  font-weight: 600;
+}
+
+.theme-toggle {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--tweed);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--blonde);
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  border-color: var(--surf);
+}
+
+/* Root note strip */
+
+.note-strip {
+  background: var(--rosewood);
+  overflow-x: auto;
+}
+
+.note-strip-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 20px 12px;
+  display: flex;
+  gap: 6px;
+}
+
+.note-btn {
+  min-width: 40px;
+  padding: 6px 0;
+  border: 1px solid var(--rosewood-soft);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--blonde);
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.note-btn:hover {
+  border-color: var(--surf);
+}
+
+.note-btn.active {
+  background: var(--fiesta);
+  border-color: var(--fiesta);
+  color: #fff;
+}
+
+/* ---------- Layout ---------- */
+
+.layout {
+  max-width: var(--maxw);
+  margin: 24px auto 60px;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 24px;
+  align-items: start;
+  transition: grid-template-columns 200ms ease;
+}
+
+/* Collapsed sidebar → fretboard takes the full width */
+.layout.sidebar-collapsed {
+  grid-template-columns: 44px 1fr;
+}
+
+/* ---------- Sidebar (scale picker) ---------- */
+
+.sidebar {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  position: sticky;
+  top: 118px;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+}
+
+.sidebar-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* pull out to cover the sidebar's padding so content scrolls underneath */
+  margin: -16px -16px 12px;
+  padding: 16px 16px 10px;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+
+.sidebar-head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sidebar-toggle {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-toggle:hover {
+  background: var(--hover);
+}
+
+/* Collapsed rail button (sits in the 44px column) */
+.sidebar-open {
+  position: sticky;
+  top: 118px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 44px;
+  padding: 12px 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--surf-deep);
+}
+
+.sidebar-open:hover {
+  border-color: var(--surf);
+}
+
+.sidebar-open-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.sidebar-open-label {
+  writing-mode: vertical-rl;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.scale-group + .scale-group {
+  margin-top: 14px;
+}
+
+.scale-group h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--surf-deep);
+}
+
+.scale-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 14px;
+  color: var(--ink);
+  transition: background 100ms ease;
+}
+
+.scale-btn:hover {
+  background: var(--hover);
+}
+
+.scale-btn.active {
+  background: var(--surf);
+  color: #0f2b26;
+  font-weight: 600;
+}
+
+/* ---------- Main panel ---------- */
+
+.scale-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 44px;
+  line-height: 1;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.scale-title .root {
+  color: var(--fiesta);
+}
+
+.scale-meta {
+  margin: 8px 0 0;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 12px;
+}
+
+.chip strong {
+  color: var(--surf-deep);
+}
+
+.chip.root strong {
+  color: var(--fiesta);
+}
+
+/* Controls row */
+
+.controls {
+  margin: 18px 0 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.controls select {
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 6px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--ink);
+}
+
+.seg {
+  display: flex;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.seg button {
+  border: none;
+  background: var(--card);
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.seg button.active {
+  background: var(--ink);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+/* ---------- Fretboard card ---------- */
+
+.board-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 18px 10px;
+  overflow-x: auto;
+}
+
+.board-svg {
+  display: block;
+  min-width: 760px;
+  width: 100%;
+}
+
+.legend {
+  display: flex;
+  gap: 18px;
+  padding: 10px 4px 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.root {
+  background: var(--fiesta);
+}
+
+.dot.note {
+  background: var(--surf);
+}
+
+/* ---------- Tuner ---------- */
+
+.tuner-panel {
+  margin-top: 20px;
+}
+
+.tuner {
+  display: grid;
+  gap: 20px;
+}
+
+.tuner-section h4 {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--surf-deep);
+}
+
+.tuner-hint {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.string-tones {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.string-tone {
+  min-width: 58px;
+  padding: 8px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.string-tone small {
+  display: block;
+  font-size: 10px;
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+}
+
+.string-tone.playing {
+  background: var(--surf);
+  border-color: var(--surf);
+  color: #0f2b26;
+}
+
+.string-tone.playing small {
+  color: #0f2b26;
+}
+
+.string-tone.near {
+  border-color: var(--fiesta);
+}
+
+.mic-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mic-btn {
+  padding: 8px 18px;
+  border: 1px solid var(--surf-deep);
+  border-radius: 999px;
+  background: var(--surf);
+  color: #0f2b26;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.mic-btn.stop {
+  background: var(--fiesta);
+  border-color: var(--fiesta);
+  color: #fff;
+}
+
+.tuner-error {
+  color: var(--fiesta);
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+
+.tuner-readout {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.tuner-note {
+  font-family: var(--font-display);
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 84px;
+}
+
+.tuner-note sub {
+  font-size: 20px;
+  color: var(--ink-soft);
+}
+
+.tuner-note.in-tune {
+  color: var(--surf-deep);
+}
+
+.tuner-freq {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink-soft);
+  min-width: 90px;
+}
+
+.cents-meter {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.cents-meter .center-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--line-strong);
+  transform: translateX(-50%);
+}
+
+.cents-needle {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--fiesta);
+  transform: translateX(-50%);
+  transition: left 80ms linear;
+}
+
+.cents-needle.in-tune {
+  background: var(--surf);
+}
+
+.cents-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  min-width: 78px;
+  text-align: right;
+}
+
+/* ---------- Info panels ---------- */
+
+.panels {
+  margin-top: 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.panel summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 16px;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.panel summary::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--surf-deep);
+  border-bottom: 2px solid var(--surf-deep);
+  transform: rotate(-45deg);
+  transition: transform 150ms ease;
+}
+
+.panel[open] summary::before {
+  transform: rotate(45deg);
+}
+
+.panel-body {
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.degree-table,
+.chord-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.degree-table th,
+.degree-table td,
+.chord-table th,
+.chord-table td {
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+  text-align: center;
+}
+
+.degree-table th,
+.chord-table th {
+  background: var(--bg);
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.degree-table td.note-name {
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.degree-table td.is-root,
+.chord-table td.is-root {
+  color: var(--fiesta);
+  font-weight: 600;
+}
+
+.steps {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.05em;
+}
+
+/* Tables scroll instead of breaking the layout on small screens */
+.table-scroll {
+  overflow-x: auto;
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+  border-top: 1px solid var(--line);
+  padding: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+/* ---------- Responsive ---------- */
+
+/* iPad / small laptop */
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: 220px 1fr;
+    gap: 16px;
+  }
+
+  .scale-title {
+    font-size: 38px;
+  }
+}
+
+/* iPad portrait and below — stack the sidebar above the board */
+@media (max-width: 880px) {
+  .layout,
+  .layout.sidebar-collapsed {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    max-height: 320px;
+  }
+
+  /* Collapsed rail becomes a full-width horizontal bar */
+  .sidebar-open {
+    position: static;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    padding: 10px 14px;
+  }
+
+  .sidebar-open-label {
+    writing-mode: horizontal-tb;
+  }
+
+  .scale-title {
+    font-size: 34px;
+  }
+}
+
+/* iPhone */
+@media (max-width: 640px) {
+  .header-inner {
+    padding: 10px 14px 8px;
+    gap: 10px;
+  }
+
+  .brand {
+    font-size: 24px;
+  }
+
+  .brand-sub {
+    font-size: 10px;
+  }
+
+  .note-strip-inner {
+    padding: 0 14px 10px;
+  }
+
+  /* Bigger touch targets */
+  .note-btn {
+    min-width: 44px;
+    padding: 10px 0;
+  }
+
+  .scale-btn {
+    padding: 10px 10px;
+  }
+
+  .layout {
+    margin: 16px auto 40px;
+    padding: 0 12px;
+    gap: 12px;
+  }
+
+  .scale-title {
+    font-size: 28px;
+  }
+
+  .controls {
+    gap: 8px;
+  }
+
+  .controls select {
+    width: 100%;
+    padding: 10px 10px;
+    font-size: 14px;
+  }
+
+  .seg {
+    width: 100%;
+  }
+
+  .seg button {
+    flex: 1;
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+
+  .board-card {
+    padding: 12px 12px 8px;
+  }
+
+  .panel summary {
+    padding: 12px 14px;
+    font-size: 15px;
+  }
+
+  .tuner-note {
+    font-size: 38px;
+  }
+
+  .string-tone {
+    flex: 1;
+    min-width: 52px;
+    padding: 10px 8px;
+  }
+
+  .footer {
+    padding: 16px 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
