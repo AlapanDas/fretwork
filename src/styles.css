@@ -554,6 +554,8 @@ main:focus {
   border-radius: var(--radius);
   padding: 18px 18px 10px;
   overflow-x: auto;
+  /* Momentum scrolling for the fretboard on touch devices */
+  -webkit-overflow-scrolling: touch;
 }
 
 .board-svg {
@@ -1147,7 +1149,20 @@ main:focus {
 @media (max-width: 640px) {
   .header-inner {
     padding: 10px 14px 8px;
-    gap: 10px;
+    gap: 10px 12px;
+  }
+
+  /* Keep the brand on the left and the actions on the right,
+     but let them wrap cleanly instead of overflowing. */
+  .header-actions {
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .instrument-toggle button {
+    padding: 7px 14px;
+    font-size: 13px;
   }
 
   .brand {
@@ -1172,6 +1187,14 @@ main:focus {
     padding: 10px 10px;
   }
 
+  /* 44px minimum tap targets for the round icon buttons */
+  .theme-toggle,
+  .info-btn,
+  .metro-step {
+    width: 40px;
+    height: 40px;
+  }
+
   .layout {
     margin: 16px auto 40px;
     padding: 0 12px;
@@ -1186,10 +1209,12 @@ main:focus {
     gap: 8px;
   }
 
-  .controls select {
+  /* Font-size 16px prevents iOS Safari from auto-zooming on focus */
+  .controls select,
+  .metronome select {
     width: 100%;
-    padding: 10px 10px;
-    font-size: 14px;
+    padding: 11px 10px;
+    font-size: 16px;
   }
 
   .seg {
@@ -1206,6 +1231,12 @@ main:focus {
     padding: 12px 12px 8px;
   }
 
+  /* Nudge the fretboard a touch smaller so more of it is visible before
+     the horizontal scroll kicks in on a phone. */
+  .board-svg {
+    min-width: 680px;
+  }
+
   .panel summary {
     padding: 12px 14px;
     font-size: 15px;
@@ -1215,14 +1246,42 @@ main:focus {
     font-size: 38px;
   }
 
+  /* Let the cents meter take the full row width once it wraps */
+  .cents-meter {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+
   .string-tone {
     flex: 1;
     min-width: 52px;
     padding: 10px 8px;
   }
 
+  /* Info popover must never spill past the viewport edge */
+  .info-popover {
+    width: min(300px, calc(100vw - 28px));
+  }
+
+  /* Metronome panel + reopen pill: give room above the footer and
+     keep them clear of the screen edges. */
+  .metro-col {
+    bottom: 12px;
+    right: 12px;
+    left: 12px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .metro-sidebar {
+    width: 100%;
+    max-height: min(70vh, calc(100vh - 100px));
+  }
+
   .footer {
     padding: 16px 14px;
+    /* clear the floating metronome pill */
+    padding-bottom: 72px;
   }
 }
 
